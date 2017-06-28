@@ -6,4 +6,9 @@ defmodule ElixirKvStore.KVController do
     keys = Store.keys()
     json conn, keys
   end
+
+  def get(conn, params=%{"key" => key}) do
+    result = Store.fetch(key)
+    json conn, result
+  end
 end

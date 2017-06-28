@@ -18,9 +18,9 @@ defmodule ElixirKvStore.Store do
     {:ok, %{log_limit: log_limit, ets_table_name: ets_table_name}}
   end
 
-  def fetch(key, default_value_function) do
+  def fetch(key) do
     case get(key) do
-      {:not_found} -> set(key, default_value_function.())
+      {:not_found} -> nil
       {:found, result} -> result
     end
   end
@@ -38,6 +38,10 @@ defmodule ElixirKvStore.Store do
 
   def keys() do
     GenServer.call(__MODULE__, {:get_all_keys})
+  end
+
+  def clear() do
+    GenServer.call(__MODULE__, {:clear})
   end
 
   # GenServer callbacks
@@ -61,4 +65,9 @@ defmodule ElixirKvStore.Store do
     {:reply, result, state}
   end
 
+  def handle_call({:clear}, _from, state) do
+    %{ets_table_name: ets_table_name} = state
+    result = :ets.delete_all_objects(ets_table_name)
+    {:reply, result, state}
+  end
 end

@@ -21,7 +21,8 @@ defmodule ElixirKvStore.Router do
     scope "/api" do
       pipe_through :api
 
-      get "/", KVController, :index
+      get "/get", KVController, :index
+      get "/get/:key", KVController, :get
     end
   end
 
