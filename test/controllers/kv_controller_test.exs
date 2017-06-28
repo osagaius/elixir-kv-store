@@ -49,4 +49,18 @@ defmodule ElixirKvStore.KVControllerTest do
     conn = get conn, "/api/get/#{key}"
     assert json_response(conn, 200) == new_val
   end
+
+  test "POST /api/delete?key=key", %{conn: conn} do
+    key = "test_key2"
+    val = "test_val"
+
+    conn = post conn, "/api/add?key=#{key}&value=#{val}"
+    assert json_response(conn, 200)
+
+    conn = post conn, "/api/delete/#{key}"
+    assert json_response(conn, 200)
+
+    conn = get conn, "/api/get/#{key}"
+    assert json_response(conn, 200) == nil
+  end
 end

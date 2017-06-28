@@ -16,4 +16,9 @@ defmodule ElixirKvStore.KVController do
     result = Store.set(key, value)
     json conn, result
   end
+
+  def delete(conn, params=%{"key" => key}) do
+    result = Store.delete(key)
+    json conn, result
+  end
 end

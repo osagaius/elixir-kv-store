@@ -22,6 +22,7 @@ defmodule ElixirKvStore.Router do
       pipe_through :api
 
       get "/get", KVController, :index
+      post "/delete/:key", KVController, :delete
       get "/get/:key", KVController, :get
       post "/add", KVController, :add
     end

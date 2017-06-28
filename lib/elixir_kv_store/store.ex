@@ -36,6 +36,10 @@ defmodule ElixirKvStore.Store do
     GenServer.call(__MODULE__, {:set, key, value})
   end
 
+  def delete(key) do
+    GenServer.call(__MODULE__, {:delete, key})
+  end
+
   def keys() do
     GenServer.call(__MODULE__, {:get_all_keys})
   end
@@ -49,6 +53,12 @@ defmodule ElixirKvStore.Store do
   def handle_call({:get, key}, _from, state) do
     %{ets_table_name: ets_table_name} = state
     result = :ets.lookup(ets_table_name, key)
+    {:reply, result, state}
+  end
+
+  def handle_call({:delete, key}, _from, state) do
+    %{ets_table_name: ets_table_name} = state
+    result = :ets.delete(ets_table_name, key)
     {:reply, result, state}
   end
 
