@@ -9,9 +9,8 @@ defmodule ElixirKvStore do
     # Define workers and child supervisors to be supervised
     children = [
       # Start the endpoint when the application starts
+      worker(ElixirKvStore.Store, []),
       supervisor(ElixirKvStore.Endpoint, []),
-      # Start your own worker by calling: ElixirKvStore.Worker.start_link(arg1, arg2, arg3)
-      # worker(ElixirKvStore.Worker, [arg1, arg2, arg3]),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
