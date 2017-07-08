@@ -72,12 +72,18 @@ defmodule ElixirKvStore.Store do
 
   def handle_call({:set, key, value}, _from, state) do
     %{ets_table_name: ets_table_name} = state
+
+    cancel_timer(key, state)
+
     true = :ets.insert(ets_table_name, {key, value})
     {:reply, value, state}
   end
 
   def handle_call({:set, key, value, expiration}, _from, state) do
     %{ets_table_name: ets_table_name} = state
+
+    cancel_timer(key, state)
+
     timer_ref = Process.send_after(__MODULE__, {:delete, key}, expiration)
 
     new_timer_refs = state
@@ -112,5 +118,12 @@ defmodule ElixirKvStore.Store do
     %{ets_table_name: ets_table_name} = state
     result = :ets.delete(ets_table_name, key)
     {:noreply, result, state}
+  end
+
+  defp cancel_timer(key, state) do
+    case timer_ref = state.timer_refs[key] do
+      nil -> nil
+      _ -> Process.cancel_timer(timer_ref)
+    end
   end
 end
