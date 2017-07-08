@@ -23,6 +23,15 @@ defmodule ElixirKvStore.KVControllerTest do
     assert json_response(conn, 200) == val
   end
 
+  test "GET /api/get_ttl/:key", %{conn: conn} do
+    key = "test_key1"
+    val = "test_val"
+    ElixirKvStore.Store.set(key, val, 10)
+
+    conn = get conn, "/api/get/#{key}"
+    assert json_response(conn, 200) > 0
+  end
+
   test "POST /api/add?key=key&value=value", %{conn: conn} do
     key = "test_key2"
     val = "test_val"
@@ -32,6 +41,34 @@ defmodule ElixirKvStore.KVControllerTest do
 
     conn = get conn, "/api/get/#{key}"
     assert json_response(conn, 200) == val
+  end
+
+  test "POST /api/add?key=key&value=value&expiration=expiration", %{conn: conn} do
+    key = "test_key2"
+    val = "test_val"
+
+    conn = post conn, "/api/add?key=#{key}&value=#{val}&expiration=10"
+    assert json_response(conn, 200)
+
+    conn = get conn, "/api/get/#{key}"
+    assert json_response(conn, 200) == val
+
+    :timer.sleep(11)
+    assert ElixirKvStore.Store.fetch(key) == nil
+  end
+
+  test "POST /api/add?key=key&value=value&expiration=expiration UPDATE EXPIRATION", %{conn: conn} do
+    key = "test_key2"
+    val = "test_val"
+
+    conn = post conn, "/api/add?key=#{key}&value=#{val}&expiration=10"
+    assert json_response(conn, 200)
+
+    conn = post conn, "/api/add?key=#{key}&value=#{val}&expiration=20"
+    assert json_response(conn, 200)
+
+    :timer.sleep(25)
+    assert ElixirKvStore.Store.fetch(key) == nil
   end
 
   test "POST /api/add?key=key&value=value UPDATE KEY", %{conn: conn} do
