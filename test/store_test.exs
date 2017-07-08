@@ -1,4 +1,4 @@
-defmodule ElixirKvStore.KVControllerTest do
+defmodule ElixirKvStore.StoreTest do
   use ElixirKvStore.ConnCase
   require Logger
 
