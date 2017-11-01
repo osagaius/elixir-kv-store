@@ -20,6 +20,7 @@ defmodule ElixirKvStore.Router do
       get "/get", KVController, :index
       post "/delete/:key", KVController, :delete
       get "/get/:key", KVController, :get
+      get "/get_ttl/:key", KVController, :get_ttl
       post "/add", KVController, :add
     end
   end
