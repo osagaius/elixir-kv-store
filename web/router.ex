@@ -14,10 +14,6 @@ defmodule ElixirKvStore.Router do
   end
 
   scope "/", ElixirKvStore do
-    pipe_through :browser # Use the default browser stack
-
-    get "/", PageController, :index
-
     scope "/api" do
       pipe_through :api
 
